@@ -25,8 +25,8 @@ function addOption() {
             console.log("Adding "+newCurrIngredient);
             console.log("Updated ingredients list: "+ingredients);
 
+
             updateSuggestions();
-            updateRecipes();
         }
         inputBox.value = "";
     }
@@ -39,7 +39,6 @@ function removeOption() {
             var remove = ingredients.indexOf(listBox.options[listBox.selectedIndex].value);
             ingredients.splice(remove, 1);
             updateSuggestions();
-            updateRecipes();
         }
 	    listBox.options[listBox.selectedIndex] = null;
         console.log("Updated ingredients list: "+ingredients);
@@ -47,6 +46,7 @@ function removeOption() {
 }
 
 function updateSuggestions(){
+
     //hide all recipes
     for(let u = 0; u < document.getElementsByClassName("recipe").length; u++){
         document.getElementsByClassName("recipe")[u].style.cssText = "display: none;";
@@ -70,19 +70,30 @@ function updateSuggestions(){
     // if it contains one of the ingredients listed, continue to next recipe
     for(let j = 0; j < recipes.length; j++){
         var currRecIngredients = recipes[j].ingredients;
-        for(let o = 0; o < weHave.length; o++){
-            if(currRecIngredients.includes(weHave[o])){
-                var name = recipes[j].title;
-                console.log(name);
-                console.log(document.getElementsByName(name)[0]);
+        var name = recipes[j].title;
+        console.log(name);
+        console.log(document.getElementsByName(name)[0]);
+        console.log('Show recipes with some ingredients: '+document.getElementById('someRecipes').checked);
+        console.log('Show recipes with all ingredients: '+document.getElementById('allRecipes').checked);
+        if(document.getElementById('someRecipes').checked){
+            for(let o = 0; o < weHave.length; o++){
+                if(currRecIngredients.includes(weHave[o])){                
+                    document.getElementsByName(name)[0].style.cssText = "display: block;";
+                }
+            }
+        }
+        else{
+            var haveAll = true;
+            for(let p = 0; p < currRecIngredients.length; p++){
+                if(!weHave.includes(currRecIngredients[p])){
+                    haveAll = false;
+                }
+            }
+            if(haveAll){
                 document.getElementsByName(name)[0].style.cssText = "display: block;";
             }
         }
     }
-}
-
-function updateRecipes(){
-    console.log("Updating recipes...");
 }
 
 function submit() {
@@ -218,7 +229,6 @@ var decodeHTML = function (html) {
 	txt.innerHTML = html;
 	return txt.value;
 };
-
 </script>
 
 <style>
@@ -274,8 +284,21 @@ var decodeHTML = function (html) {
         <button id="add" type="button">Add ></button> 
         <select name="listBox[]" id="listBox" size="4" multiple></select>
         <button id="remove" type="button">Remove</button>
-	</form>
     <button id="submit">Find my recipes!</button>
+    <br>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="exampleRadios" id="someRecipes" value="option1" checked>
+        <label class="form-check-label" for="exampleRadios1">
+            Some Ingredients
+        </label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="exampleRadios" id="allRecipes" value="option2">
+        <label class="form-check-label" for="exampleRadios2">
+            ALL Ingredients
+        </label>
+    </div>
+    </form>
 </div>
 		
 <div class="container">

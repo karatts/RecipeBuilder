@@ -223,6 +223,10 @@ router.get('/',(req, res) => {
     });
 });
 
+router.get('/addrecipe', (req, res) => {
+    res.render('addrecipe');
+});
+
 //-----------------------------------------------------------
 
 //listen on port 9090
