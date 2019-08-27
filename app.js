@@ -224,7 +224,24 @@ router.get('/',(req, res) => {
 });
 
 router.get('/addrecipe', (req, res) => {
-    res.render('addrecipe');
+    Ingredient.find({}, (err, results, count) => {
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.render('addrecipe', {ingredients: results});
+        }
+    });
+});
+
+var newIngredients = [];
+
+router.post('/addrecipe', (req, res) => {
+    //add the recipe
+
+    //confirm the ingredients
+    //update newIngredients
+    //redirect to addrecipept2 for ingredients confirmation
 });
 
 //-----------------------------------------------------------
