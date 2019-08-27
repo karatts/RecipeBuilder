@@ -1,13 +1,17 @@
 <script>
 var ingredients = [];
+var allIngredients = [];
 var recipes = [];
 
 function addOption() {
-    if(inputBox.value !== ""){
-        var splitIngredient = inputBox.value.split(" ");
+    var inputIngredient = inputBox.value.trim();
+    inputIngredient = inputIngredient.replace(/  +/g, ' ');
+    console.log(inputIngredient);
+    if(inputIngredient !== ""){
+        var splitIngredient = inputIngredient.split(" ");
         var newCurrIngredient = "";
         for(let v=0; v < splitIngredient.length; v++){
-            var ingredientPart = splitIngredient[v];
+            var ingredientPart = splitIngredient[v].trim();
             ingredientPart = ingredientPart.toLowerCase();
             ingredientPart = ingredientPart.replace(ingredientPart.charAt(0), ingredientPart.charAt(0).toUpperCase());
             newCurrIngredient = newCurrIngredient + ingredientPart + " ";
@@ -20,6 +24,9 @@ function addOption() {
 	        ingredients.push(newCurrIngredient);
             console.log("Adding "+newCurrIngredient);
             console.log("Updated ingredients list: "+ingredients);
+
+            updateSuggestions();
+            updateRecipes();
         }
         inputBox.value = "";
     }
@@ -31,17 +38,58 @@ function removeOption() {
         if(ingredients.includes(listBox.options[listBox.selectedIndex].value)){
             var remove = ingredients.indexOf(listBox.options[listBox.selectedIndex].value);
             ingredients.splice(remove, 1);
+            updateSuggestions();
+            updateRecipes();
         }
 	    listBox.options[listBox.selectedIndex] = null;
         console.log("Updated ingredients list: "+ingredients);
     }
 }
 
+function updateSuggestions(){
+    //hide all recipes
+    for(let u = 0; u < document.getElementsByClassName("recipe").length; u++){
+        document.getElementsByClassName("recipe")[u].style.cssText = "display: none;";
+    }
+
+    console.log("Updating suggestions...");
+    // return recipes that contain the ingredients you listed 
+    // but may have ingredients you're missing
+    console.log("looking for recipes with "+ingredients);
+
+    var weHave = [];
+    for(let k = 0; k < ingredients.length; k++){
+        var currIngredient = ingredients[k];
+        if(allIngredients.includes(currIngredient)){
+            weHave.push(currIngredient);
+        }
+    }
+    console.log(weHave);
+
+    // check all recipes for these ingredients
+    // if it contains one of the ingredients listed, continue to next recipe
+    for(let j = 0; j < recipes.length; j++){
+        var currRecIngredients = recipes[j].ingredients;
+        for(let o = 0; o < weHave.length; o++){
+            if(currRecIngredients.includes(weHave[o])){
+                var name = recipes[j].title;
+                console.log(name);
+                console.log(document.getElementsByName(name)[0]);
+                document.getElementsByName(name)[0].style.cssText = "display: block;";
+            }
+        }
+    }
+}
+
+function updateRecipes(){
+    console.log("Updating recipes...");
+}
+
 function submit() {
     //find matching recipes
     //reveal recipes...
     console.log(document.getElementById("listBox"));
-    document.getElementById("recipes").style.cssText = "display: none;";
+    //document.getElementById("recipes").style.cssText = "display: none;";
 }
 
 window.onload = function() {
@@ -52,23 +100,177 @@ window.onload = function() {
 	document.getElementById("remove").onclick = removeOption;
     document.getElementById("submit").onclick = submit;
 
+    console.log(allIngredients);
     console.log(recipes);
+
+    autocomplete(document.getElementById("myInput"), allIngredients);
 }
 
 function noenter() {
   return !(window.event && window.event.keyCode == 13);
 }
+
+//-------------------------------------------------------------------
+//-------------------AUTO COMPLETE CODE FROM W3----------------------
+//-------------------------------------------------------------------
+function autocomplete(inp, arr) {
+    /*the autocomplete function takes two arguments,
+    the text field element and an array of possible autocompleted values:*/
+    var currentFocus;
+    /*execute a function when someone writes in the text field:*/
+    inp.addEventListener("input", function(e) {
+        var a, b, i, val = this.value;
+        /*close any already open lists of autocompleted values*/
+        closeAllLists();
+        if (!val) { return false;}
+        currentFocus = -1;
+        /*create a DIV element that will contain the items (values):*/
+        a = document.createElement("DIV");
+        a.setAttribute("id", this.id + "autocomplete-list");
+        a.setAttribute("class", "autocomplete-items");
+        /*append the DIV element as a child of the autocomplete container:*/
+        this.parentNode.appendChild(a);
+        /*for each item in the array...*/
+        for (i = 0; i < arr.length; i++) {
+            /*check if the item starts with the same letters as the text field value:*/
+            if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+            /*create a DIV element for each matching element:*/
+            b = document.createElement("DIV");
+            /*make the matching letters bold:*/
+            b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+            b.innerHTML += arr[i].substr(val.length);
+            /*insert a input field that will hold the current array item's value:*/
+            b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+            /*execute a function when someone clicks on the item value (DIV element):*/
+                b.addEventListener("click", function(e) {
+                    /*insert the value for the autocomplete text field:*/
+                    inp.value = this.getElementsByTagName("input")[0].value;
+                    /*close the list of autocompleted values,
+                    (or any other open lists of autocompleted values:*/
+                    closeAllLists();
+                });
+                a.appendChild(b);
+            }
+        }
+    });
+    /*execute a function presses a key on the keyboard:*/
+    inp.addEventListener("keydown", function(e) {
+        var x = document.getElementById(this.id + "autocomplete-list");
+        if (x) x = x.getElementsByTagName("div");
+        if (e.keyCode == 40) {
+            /*If the arrow DOWN key is pressed,
+            increase the currentFocus variable:*/
+            currentFocus++;
+            /*and and make the current item more visible:*/
+            addActive(x);
+        } 
+        else if (e.keyCode == 38) { //up
+            /*If the arrow UP key is pressed,
+            decrease the currentFocus variable:*/
+            currentFocus--;
+            /*and and make the current item more visible:*/
+            addActive(x);
+        } 
+        else if (e.keyCode == 13) {
+            /*If the ENTER key is pressed, prevent the form from being submitted,*/
+            e.preventDefault();
+            if (currentFocus > -1) {
+                /*and simulate a click on the "active" item:*/
+                if (x) x[currentFocus].click();
+            }
+        }
+    });
+    function addActive(x) {
+        /*a function to classify an item as "active":*/
+        if (!x) return false;
+        /*start by removing the "active" class on all items:*/
+        removeActive(x);
+        if (currentFocus >= x.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = (x.length - 1);
+        /*add class "autocomplete-active":*/
+        x[currentFocus].classList.add("autocomplete-active");
+    }
+    function removeActive(x) {
+        /*a function to remove the "active" class from all autocomplete items:*/
+        for (var i = 0; i < x.length; i++) {
+            x[i].classList.remove("autocomplete-active");
+        }
+    }
+    function closeAllLists(elmnt) {
+        /*close all autocomplete lists in the document,
+        except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+        for (var i = 0; i < x.length; i++) {
+            if (elmnt != x[i] && elmnt != inp) {
+                x[i].parentNode.removeChild(x[i]);
+            }
+        }
+    }   
+    /*execute a function when someone clicks in the document:*/
+    document.addEventListener("click", function (e) {
+        closeAllLists(e.target);
+    });
+}
+
+//CONVERT HTML ENCODING BACK TO NORMAL TEXT
+var decodeHTML = function (html) {
+	var txt = document.createElement('textarea');
+	txt.innerHTML = html;
+	return txt.value;
+};
+
 </script>
 
 <style>
+.autocomplete{
+    position: relative;
+    display: inline-block;
+    width: 300px;
+}
 
+#myInput{
+    width: 300px;
+    margin-bottom: -1px !important;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9; 
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: DodgerBlue !important; 
+  color: #ffffff; 
+}
+
+.recipe{
+    display: none;
+}
 </style>
 
-
 <div class="container">
-    <form id="myIngredients" name="FormName">
+    <form id="myIngredients" name="FormName" autocomplete="off">
 		<h1>My Ingredients</h1>
-        <input type="text" name="inputBox" size="24" onkeypress="return noenter()">                 
+        <div class="autocomplete">
+            <input type="text" id="myInput" name="inputBox" size="24" onkeypress="return noenter()" placeholder="e.g. Potato...">
+        </div>                 
         <button id="add" type="button">Add ></button> 
         <select name="listBox[]" id="listBox" size="4" multiple></select>
         <button id="remove" type="button">Remove</button>
@@ -77,11 +279,15 @@ function noenter() {
 </div>
 		
 <div class="container">
-    <div class="container">
-        <div class="container" id="ingredients">
-        {{ingredients}}
-        </div>
+    <div class="container" id="ingredients" style="display: none;">
+        {{#each ingredients}}
+            <script>
+                allIngredients.push('{{this.name}}');
+            </script>
+            {{this.name}}<br>
+        {{/each}}
     </div>
+
     <div class="container">
         <div class="container" id="recipes">
             {{#each recipes}}
@@ -103,7 +309,8 @@ function noenter() {
                 </div>
             </div>
             <script>
-                recipes[{{@index}}] = {title: '{{this.title}}', ingredients: recipeIngredients}
+                var decoded = decodeHTML('{{this.title}}');
+                recipes[{{@index}}] = {title: decoded, ingredients: recipeIngredients}
             </script>
             {{/each}}
         </div>

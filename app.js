@@ -62,7 +62,9 @@ function addRecipe(title, rawingredients, measuredingredients, serving, instruct
     //change format of ingredients so that they are all Uppercase first letter, lowercase rest of letters
     var ingredientList = [];
     for(let j = 0; j < rawingredients.length; j++){
-        var currIngredient = rawingredients[j];
+        //var currIngredient = rawingredients[j];
+        var currIngredient = rawingredients[j].trim();
+        currIngredient = currIngredient.replace(/  +/g, ' ');
         var splitIngredient = currIngredient.split(" ");
         var newCurrIngredient = "";
         for(let v=0; v < splitIngredient.length; v++){
@@ -214,20 +216,9 @@ router.get('/',(req, res) => {
                 console.log(err);
             }
             
-            var allIngredients = [];
-            var done = false;
-            for(let k=0; k<ingResults.length; k++){
-                allIngredients.push(ingResults[k].name);
-                if(k+1 === ingResults.length){
-                    done = true;
-                }
-            }   
-            if(done){
-                console.log(allIngredients);
-                console.log(ingResults);
-                console.log(recResults);
-                res.render('home', {ingredients: allIngredients, recipes: recResults});
-            }
+            console.log(ingResults);
+            console.log(recResults);
+            res.render('home', {ingredients: ingResults, recipes: recResults});
         });
     });
 });
