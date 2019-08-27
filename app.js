@@ -31,12 +31,10 @@ const Ingredient = mongoose.model('Ingredientv2');
 
 app.use('/', router);
 
-//-------------------GENERAL FUNCTIONS-----------------------
+//-------------------------------------------------------------------------------
+//------------------------------ TEST FUNCTIONS ---------------------------------
+//-------------------------------------------------------------------------------
 
-//-------- FUNCTION # 2: CONFIRM RECIPE AND ADD INGREDIENTS
-//-----------------------------------------------------------
-
-// TEST FUNCTION - FIND ALL RECIPES
 function findAllRecipes(){
     Recipe.find({}, (err, result, count) => {
         console.log(result);
@@ -48,6 +46,10 @@ function findAllIngredients(){
         console.log(result);
     });
 }
+
+//-------------------------------------------------------------------------------
+//---------------------------- GENERAL FUNCTIONS --------------------------------
+//-------------------------------------------------------------------------------
 
 // FUNCTION # 1: ADD A RECIPE
 function addRecipe(title, rawingredients, measuredingredients, serving, instructions, image){
@@ -98,7 +100,24 @@ function addRecipe(title, rawingredients, measuredingredients, serving, instruct
     });
 }
 
-//------------------START UP FUNCTIONS-----------------------
+// FUNCTION # 2: ADD INGREDIENTS
+
+//-------------------------------------------------------------------------------
+//--------------------------- CLEAR DATABASE INFO -------------------------------
+//-------------------------------------------------------------------------------
+
+/* Ingredient.remove({}, function(err) { 
+   console.log('collection removed') 
+}); */
+
+/* Recipe.remove({}, function(err) { 
+   console.log('collection removed') 
+}); */
+
+//-------------------------------------------------------------------------------
+//--------------------------- START UP FUNCTIONS --------------------------------
+//-------------------------------------------------------------------------------
+
 // ADD 3 BASIC RECIPES TO DATABASE
 function startUpRecipes(){
 // RECIPE # 1: PB & J
@@ -108,7 +127,8 @@ function startUpRecipes(){
 // RECIPE # 3: BAKED POTATO
     addRecipe("Baked Potato", ["ButTer", "Russet PoTato", "SALT", "Olive OIL", "pepper"], ["4 russet potato", "Olive Oil", "Salt", "Pepper", "butter"], 4, "Preheat oven to 350°. Prick potatoes all over with a fork and rub with oil; season generously with salt and pepper. Place potatoes directly on an oven rack and roast until very soft when squeezed and skin is crisp, 60–75 minutes. Cut open each potato; season with salt and pepper and top with butter.", "../images/recipes/roast-beef.jpg");
 }
-//  ----- ADD STARTER INGREDIENTS TO DATABASE
+
+// ADD STARTER INGREDIENTS TO ARRAY
 function startUpIngredients(){
     Recipe.find({}, (err, results, count) => {
         for(let v = 0; v < results.length; v++){
@@ -124,20 +144,13 @@ function startUpIngredients(){
     });
 }
 
-/* Ingredient.remove({}, function(err) { 
-   console.log('collection removed') 
-}); */
-
-/* Recipe.remove({}, function(err) { 
-   console.log('collection removed') 
-}); */
-
-//-----------------------------------------------------------
+//-------------------------------------------------------------------------------
+//----- LOADING INITIALIZING PAGES - ONLY NEED TO BE RAN AT SETUP OF DB ---------
+//-------------------------------------------------------------------------------
 
 var ingredients = [];
 
-//---------------------LOADING PAGES-------------------------
-
+// ADD RECIPES TO DATABASE IF THERE ARE NONE
 router.get('/init', (req, res) => {
     console.log("initializing recipes...");
 
@@ -155,10 +168,12 @@ router.get('/init', (req, res) => {
         console.log(ingredients);
     });
 
-    res.render('home', {});
+    res.render('init', {});
 
 });
 
+// ADD INGREDIENTS TO DATABASE IF THERE ARE NONE
+// uses info stored in array to setup ingredients in the db
 router.get('/init/2', (req, res) => {
     console.log("initializing ingredients...");
 
@@ -174,24 +189,35 @@ router.get('/init/2', (req, res) => {
                         console.log(err);
                     }
                     else{
+                        res.redirect('/');
                     }
                 });
             }
         }
     });
-    res.render('home', {});
+    res.render('init', {});
 });
 
+//-------------------------------------------------------------------------------
+// ------------------------------ SITE PAGES ------------------------------------
+//-------------------------------------------------------------------------------
+
 router.get('/',(req, res) => {
-   
     console.log('in router.get /');
-    console.log(ingredients);
-
-    Ingredient.find({}, (err, results, count) => {
-        console.log(results);
+    
+    Ingredient.find({}, (err, ingResults, count) => {
+        if(err){
+            console.log(err);
+        }
+        Recipe.find({}, (err, recResults, count) => {
+            if(err){
+                console.log(err);
+            }
+            console.log(ingResults);
+            console.log(recResults);
+            res.render('home', {ingredients: ingResults, recipes: recResults});
+        });
     });
-
-    res.render('home', {});
 });
 
 //-----------------------------------------------------------
