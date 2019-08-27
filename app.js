@@ -213,9 +213,21 @@ router.get('/',(req, res) => {
             if(err){
                 console.log(err);
             }
-            console.log(ingResults);
-            console.log(recResults);
-            res.render('home', {ingredients: ingResults, recipes: recResults});
+            
+            var allIngredients = [];
+            var done = false;
+            for(let k=0; k<ingResults.length; k++){
+                allIngredients.push(ingResults[k].name);
+                if(k+1 === ingResults.length){
+                    done = true;
+                }
+            }   
+            if(done){
+                console.log(allIngredients);
+                console.log(ingResults);
+                console.log(recResults);
+                res.render('home', {ingredients: allIngredients, recipes: recResults});
+            }
         });
     });
 });

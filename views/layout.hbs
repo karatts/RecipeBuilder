@@ -1,33 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height: 100%;">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <link rel="icon" href="../images/iconv2.png">
-    <title>Recipe Builder</title>
-    <style type="text/css">
-   		body { background: #c1b6b6 !important; } /* Adding !important forces the browser to overwrite the default style applied by Bootstrap */	
-	</style>
+    <title>RecipeBuilder</title>
+    <style type="text/css"></style>
     <!-- Bootstrap -->
-    <link href="/css/style.css" rel="stylesheet">
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bootstrap.css" />
+    <link rel="stylesheet" href="/css/bootstrap-responsive.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+
   </head>
 
-  <body>
+  <body style="height: auto">
+  {{#if noid}}
+    <header>
+      <div class="container">
+        <div class="row">
+        <div class="col-4">
+        <div class="dropdown">
+          <img src="/images/Logo.PNG" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%; padding: 10px;">
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+         	  <a class="dropdown-item" href="/">Home</a>
+            <a class="dropdown-item" href="/hobbies">Hobbies</a>
+            <div class="dropdown-divider"></div>
+         	  <a class="dropdown-item" href="/login">Login</a>
+         	  <a class="dropdown-item" href="/signup">Register</a>
+          </div>
+          </div>
+        </div>
+        <div class="col-2"></div>
+        <div class="col-5" id="navBar">
+          <div class="dropdown">
+          <div class="btn btn-outline-info navbar" id="login">Login</div>
+          <div class="dropdown-menu" id="loginDropDown">
+            <form class="px-4 py-3">
+              <div class="form-group">
+                <label>Username</label>
+                <input type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="Username">
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Password">
+              </div>
+              <button type="submit" class="btn btn-primary">Sign in</button>
+            </form>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/signup">New around here? Sign up</a>
+          <a class="dropdown-item" href="#">Forgot password?</a>
+        </div>
+        </div>
+        </div>
+        <div class="col-1" id="signUpNav">
+          <a href="/signup" class="btn btn-outline-danger navbar" tabindex="-1" role="button" id="signUp" style="border-color: #f78e81; color: #f78e81;">Sign Up</a></div>
+        </div>
+      </div>
+      </div>
+    </header>
+
+  {{/if}}
+  
+
+  {{#if id}}
+    <header>
+      <div class="container">
+        <div class="row">
+        <div class="col-4">
+        <div class="dropdown">
+          <img src="/images/Logo.PNG" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%; padding: 10px;">
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+         	  <a class="dropdown-item" href="/">Home</a>
+            <a class="dropdown-item" href="/hobbies">Hobbies</a>
+            <a class="dropdown-item" href="/browse/projects">Projects</a>
+          </div>
+          </div>
+        </div>
+        <div class="col-4"></div>
+        <div class="col-4" id="navBarLoggedIn">
+          <div class="dropdown">
+          <div class="btn btn-outline-info navbar" id="login">{{id}}</div>
+          <div class="dropdown-menu" id="loginDropDown">
+         	  <a class="dropdown-item" href="/user/{{id}}">Profile</a>
+            <a class="dropdown-item" href="/user/{{id}}/projects">Projects</a>
+            <a class="dropdown-item" href="/user/{{id}}/hobbies">Interests</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/help">Help</a>
+            <a class="dropdown-item" href="/settings">Settings</a>
+            <a class="dropdown-item" href="/logout">Log Out</a>
+          </div>
+        </div>
+        </div>
+        </div>
+      </div>
+    </header>
+  {{/if}}
+
     {{{body}}}
 
+    <div style="height: 80px;"></div>
+
     <footer class="footer">
-      <div class="container" style="width: 100%; bottom: 0; position: fixed; display: block;">
-            Kara Tong  &copy; 2019 Recipe Builder, Inc.
-      </div>
+      <div id="footer">Kara Tong  &copy; 2019 RecipeBuilder, Inc.</div>
     </footer>
 
-    
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+
   </body>
 </html>

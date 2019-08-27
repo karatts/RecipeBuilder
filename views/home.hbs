@@ -1,0 +1,111 @@
+<script>
+var ingredients = [];
+var recipes = [];
+
+function addOption() {
+    if(inputBox.value !== ""){
+        var splitIngredient = inputBox.value.split(" ");
+        var newCurrIngredient = "";
+        for(let v=0; v < splitIngredient.length; v++){
+            var ingredientPart = splitIngredient[v];
+            ingredientPart = ingredientPart.toLowerCase();
+            ingredientPart = ingredientPart.replace(ingredientPart.charAt(0), ingredientPart.charAt(0).toUpperCase());
+            newCurrIngredient = newCurrIngredient + ingredientPart + " ";
+        }
+        newCurrIngredient = newCurrIngredient.trim();
+
+        //check if value is in the array
+        if(!ingredients.includes(newCurrIngredient)){
+            listBox.appendChild(new Option(newCurrIngredient,newCurrIngredient));
+	        ingredients.push(newCurrIngredient);
+            console.log("Adding "+newCurrIngredient);
+            console.log("Updated ingredients list: "+ingredients);
+        }
+        inputBox.value = "";
+    }
+}
+
+function removeOption() {
+    if(listBox.options[listBox.selectedIndex] !== undefined){
+        console.log("Removing "+listBox.options[listBox.selectedIndex].value);
+        if(ingredients.includes(listBox.options[listBox.selectedIndex].value)){
+            var remove = ingredients.indexOf(listBox.options[listBox.selectedIndex].value);
+            ingredients.splice(remove, 1);
+        }
+	    listBox.options[listBox.selectedIndex] = null;
+        console.log("Updated ingredients list: "+ingredients);
+    }
+}
+
+function submit() {
+    //find matching recipes
+    //reveal recipes...
+    console.log(document.getElementById("listBox"));
+    document.getElementById("recipes").style.cssText = "display: none;";
+}
+
+window.onload = function() {
+	inputBox = document.FormName.inputBox;
+	listBox = document.getElementById("listBox");
+
+	document.getElementById("add").onclick = addOption;
+	document.getElementById("remove").onclick = removeOption;
+    document.getElementById("submit").onclick = submit;
+
+    console.log(recipes);
+}
+
+function noenter() {
+  return !(window.event && window.event.keyCode == 13);
+}
+</script>
+
+<style>
+
+</style>
+
+
+<div class="container">
+    <form id="myIngredients" name="FormName">
+		<h1>My Ingredients</h1>
+        <input type="text" name="inputBox" size="24" onkeypress="return noenter()">                 
+        <button id="add" type="button">Add ></button> 
+        <select name="listBox[]" id="listBox" size="4" multiple></select>
+        <button id="remove" type="button">Remove</button>
+	</form>
+    <button id="submit">Find my recipes!</button>
+</div>
+		
+<div class="container">
+    <div class="container">
+        <div class="container" id="ingredients">
+        {{ingredients}}
+        </div>
+    </div>
+    <div class="container">
+        <div class="container" id="recipes">
+            {{#each recipes}}
+            <script>
+                var recipeIngredients = [];
+            </script>
+            <div class="recipe" name='{{this.title}}'>
+                <h3>{{this.title}}</h3>
+                <div class="rec-ingredients">
+                    This recipe includes:<br>
+                    <ul>
+                    {{#each this.rawingredients}}
+                    <li>{{this}}</li>
+                    <script>
+                        recipeIngredients.push('{{this}}');
+                    </script>
+                    {{/each}}
+                    </ul>
+                </div>
+            </div>
+            <script>
+                recipes[{{@index}}] = {title: '{{this.title}}', ingredients: recipeIngredients}
+            </script>
+            {{/each}}
+        </div>
+    </div>
+</div>
