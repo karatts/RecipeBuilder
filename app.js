@@ -103,6 +103,41 @@ function addRecipe(title, rawingredients, measuredingredients, serving, instruct
 }
 
 // FUNCTION # 2: ADD INGREDIENTS
+function addIngredients(ingredients){
+    Ingredient.find({}, (err, results, count) => {
+        //create an array of ingredients
+        let allIngredients = [];
+        for(let g = 0; g < results.length; g++){
+            allIngredients.push(results[g].name);
+        }
+        var done = false;
+        console.log(allIngredients);
+        for(let b=0; b<ingredients.length; b++){
+            if(!allIngredients.includes(ingredients[b])){
+                console.log("Add the ingredient: "+ingredients[b]);
+                const newIngredient = new Ingredient({
+                    name: ingredients[b],
+                    substitute: ["none"]
+                });
+                newIngredient.save((err) => {
+                    if(err){
+                        console.log(err);
+                    }
+                });
+            }
+            else{
+                console.log("We already have "+ingredients[b]);
+            }
+            if(b+1 === ingredients.length){
+                done = true;
+            }
+        }
+        if(done){
+            return true;
+        }
+    });
+}
+
 
 //-------------------------------------------------------------------------------
 //--------------------------- CLEAR DATABASE INFO -------------------------------
@@ -234,14 +269,52 @@ router.get('/addrecipe', (req, res) => {
     });
 });
 
-var newIngredients = [];
-
 router.post('/addrecipe', (req, res) => {
-    //add the recipe
+    console.log("at router.post /addrecipe");
+    //console.log(req.body);
 
-    //confirm the ingredients
-    //update newIngredients
-    //redirect to addrecipept2 for ingredients confirmation
+    let image = req.body.imageURL;
+    if(image === ""){
+        image ="../images/recipes/noImageRecipe.jpg";
+    }
+
+    let newRecIng = [];
+    if(typeof req.body.listBox === 'object'){
+        newRecIng = req.body.listBox;
+    }
+    else{
+        newRecIng.push(req.body.listBox);
+    }
+
+    /*     console.log("Adding new recipe:");
+    console.log("Title: "+req.body.title);
+    console.log("Ingredients: "+newRecIng);
+    console.log("Serves: "+req.body.serving);
+    console.log("Instructions: "+req.body.instructions);
+    console.log("Image URL: "+image); */
+
+    //add the recipe
+    addRecipe(req.body.title, newRecIng, newRecIng, req.body.serving, req.body.instructions, image);
+
+    //update update the ingredients
+    if(addIngredients(newRecIng)){
+        res.redirect('/');
+    }
+
+    res.render('init', {});
+});
+
+router.get('/recipes/:slug',(req, res) => {
+    console.log("at specific recipe page for "+req.params.slug);
+    const slug = req.params.slug;
+    Recipe.find({slug: slug}, (err, result, count) => {
+        if(err){
+            console.log(err);
+        }
+        console.log(result[0]);
+        let goRec = result[0];
+        res.render('recipes', {recipe: goRec});
+    });
 });
 
 //-----------------------------------------------------------

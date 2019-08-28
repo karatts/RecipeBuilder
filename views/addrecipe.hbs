@@ -109,28 +109,36 @@
     }
     
     function addOption() {
-        var inputIngredient = inputBox.value.trim();
-        inputIngredient = inputIngredient.replace(/  +/g, ' ');
-        console.log(inputIngredient);
-        if(inputIngredient !== ""){
-            var splitIngredient = inputIngredient.split(" ");
-            var newCurrIngredient = "";
-            for(let v=0; v < splitIngredient.length; v++){
-                var ingredientPart = splitIngredient[v].trim();
-                ingredientPart = ingredientPart.toLowerCase();
-                ingredientPart = ingredientPart.replace(ingredientPart.charAt(0), ingredientPart.charAt(0).toUpperCase());
-                newCurrIngredient = newCurrIngredient + ingredientPart + " ";
-            }
-            newCurrIngredient = newCurrIngredient.trim();
 
-            //check if value is in the array
-            if(!ingredients.includes(newCurrIngredient)){
-                listBox.appendChild(new Option(newCurrIngredient,newCurrIngredient));
-                ingredients.push(newCurrIngredient);
-                console.log("Adding "+newCurrIngredient);
-                console.log("Updated ingredients list: "+ingredients);
-            }
+        //verify that the value is not all spaces
+        if (ifSpaces(inputBox.value)) {
             inputBox.value = "";
+        }
+        else{
+            //verify ingredient and format
+            var inputIngredient = inputBox.value.trim();
+            inputIngredient = inputIngredient.replace(/  +/g, ' ');
+            console.log(inputIngredient);
+            if(inputIngredient !== ""){
+                var splitIngredient = inputIngredient.split(" ");
+                var newCurrIngredient = "";
+                for(let v=0; v < splitIngredient.length; v++){
+                    var ingredientPart = splitIngredient[v].trim();
+                    ingredientPart = ingredientPart.toLowerCase();
+                    ingredientPart = ingredientPart.replace(ingredientPart.charAt(0), ingredientPart.charAt(0).toUpperCase());
+                    newCurrIngredient = newCurrIngredient + ingredientPart + " ";
+                }
+                newCurrIngredient = newCurrIngredient.trim();
+
+                //check if value is in the array
+                if(!ingredients.includes(newCurrIngredient)){
+                    ingredients.push(newCurrIngredient);
+                    listBox.appendChild(new Option(newCurrIngredient,newCurrIngredient));
+                    console.log("Adding "+newCurrIngredient);
+                    console.log("Updated ingredients list: "+ingredients);
+                }
+                inputBox.value = "";
+            }
         }
     }
 
@@ -154,6 +162,53 @@
         document.getElementById("remove").onclick = removeOption;
 
         autocomplete(document.getElementById("myInput"), allIngredients);
+    }
+
+    function ifSpaces(string){
+        var spaceString = string;
+        if (!string.replace(/\s/g, '').length) {
+            console.log('string only contains whitespace (ie. spaces, tabs or line breaks)');
+            return true;
+        }
+        return false;
+    }
+
+    function allOptions(selectName){
+        document.getElementById("error").style.cssText = "display: none;";
+        var valid = true;
+
+        //verify that each field is not empty except for image
+        let title = document.getElementById("title");
+        let ingred = document.getElementById("listBox").options;
+        let serves = document.getElementById("serving");
+        let instruct = document.getElementById("instructions");
+        console.log("title: " + title.value);
+        if(title.value === undefined || ifSpaces(title.value)){
+            //check that the title is not just a bunch of spaces...
+            valid = false;
+        }
+        console.log("ingredient length: " + ingred.length);
+        if(ingred.length === 0){
+            valid = false;
+        }
+        console.log("serving size: "+serves.value);
+        if(serves.value === ""){
+            valid = false;
+        }
+        console.log("instructions: " + instructions.value);
+        if(instructions.value === undefined || ifSpaces(instructions.value)){
+            valid = false;
+        }
+
+        if(valid){
+            //select all options
+            for(let v = 0; v < document.getElementById("listBox").options.length; v++){
+                document.getElementById("listBox").options[v].selected = true;
+            }
+            document.getElementById("myForm").submit();
+        }else{
+            document.getElementById("error").style.cssText = "display: block;";
+        }
     }
 
 </script>
@@ -196,49 +251,71 @@
         background-color: DodgerBlue !important; 
         color: #ffffff; 
     }
+
+    #error{
+        display: none; 
+        color: red;
+    }
 </style>
 
 <div class="container">
+
+    <div id="error">
+        There was an error processing your recipe!
+    </div>
+
     <h1>Submit a recipe</h1>
-    <form name="FormName" autocomplete="off">
-        <div class="form-group" id="title">
-            <label for="exampleInputEmail1">Title</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+    <form name="FormName" autocomplete="off" method="POST" action="" id="myForm">
+        <div class="form-group" id="titleDiv">
+            <label>Title</label>
+            <input type="text" name="title" id="title" aria-describedby="recipeTitle" onkeypress="return noenter()"  placeholder="Recipe Name" required>
         </div>
 
         <div id="ingredients">
-            rawingredients and measuredingredients --- needs to be parsed on backend<br>
-            <div class="autocomplete">
+            <label>rawingredients and measuredingredients --- needs to be parsed on backend</label>
+            <input type="number" id="measurement" name="measurement" min="0">
+            <select class="form-control" id="measurementUnit" name="measurementUnit">
+                <option></option>
+                <option>teaspoon</option>
+                <option>tablespoon</option>
+                <option>cup</option>
+                <option>fluid oz.</option>
+                <option>pint</option>
+                <option>quart</option>
+                <option>gallon</option>
+                <option>ounces</option>
+                <option>pounds</option>
+            </select>
+            <div class="autocomplete form-group">
                 <input type="text" id="myInput" name="inputBox" size="24" onkeypress="return noenter()" placeholder="e.g. Potato...">
             </div>    
             <button id="add" type="button">Add ></button> 
-            <select name="listBox[]" id="listBox" size="4" multiple></select>
+            <select name="listBox" id="listBox" size="4" multiple></select>
             <button id="remove" type="button">Remove</button>
         </div>
+
+        <div style="display: none;">
+        </div>
         
-        <div class="form-group" id="serving">
-            <label for="exampleFormControlSelect1">Serving Size</label>
-            <select class="form-control" id="exampleFormControlSelect1">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select>
+        <div class="form-group" id="servingDiv">
+            <label>Serving Size</label>
+            <input type="number" id="serving" name="serving" min="1">
         </div>
     
-        <div class="form-group" id="instructions">
-            <label for="exampleFormControlTextarea1">Instructions</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <div class="form-group" id="instructionsDiv">
+            <label>Instructions</label>
+            <textarea name="instructions" class="form-control" id="instructions" rows="3" required></textarea>
         </div>
 
         <div class="form-group" id="image">
-            <label for="exampleFormControlFile1">Upload an image for your recipe</label>
-            <input type="file" class="form-control-file" id="exampleFormControlFile1">
-            <small id="emailHelp" class="form-text text-muted">Optional</small>
+            <label>Upload an image of your dish</label>
+            {{!-- <input name="recipePhoto" type="file" class="form-control-file" id="recipePhoto"> --}}
+            <small id="optionalMessage" class="form-text text-muted">Optional</small>
+            <input type="text" name="imageURL" placeholder="Image URL">
         </div>
 
-        <button type="submit">Submit</button>
+        {{!-- FOR TESTING PURPOSES ---- <button type="button" onclick="allOptions();">Verify</button> --}}
+        <button type="submit" onclick="allOptions();">Submit</button>
     </form>
 </div>
 

@@ -110,6 +110,8 @@ window.onload = function() {
 	document.getElementById("add").onclick = addOption;
 	document.getElementById("remove").onclick = removeOption;
     document.getElementById("submit").onclick = submit;
+    document.getElementById("allRecipes").onclick = updateSuggestions;
+    document.getElementById("someRecipes").onclick = updateSuggestions;
 
     console.log(allIngredients);
     console.log(recipes);
@@ -330,6 +332,7 @@ var decodeHTML = function (html) {
                     {{/each}}
                     </ul>
                 </div>
+                <div class="recipeLink container"><a href="/recipes/{{this.slug}}">Check out the recipe!</a></div>
             </div>
             <script>
                 var decoded = decodeHTML('{{this.title}}');
