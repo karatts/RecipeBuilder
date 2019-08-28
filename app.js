@@ -297,11 +297,9 @@ router.post('/addrecipe', (req, res) => {
     addRecipe(req.body.title, newRecIng, newRecIng, req.body.serving, req.body.instructions, image);
 
     //update update the ingredients
-    if(addIngredients(newRecIng)){
-        res.redirect('/');
-    }
+    addIngredients(newRecIng);
 
-    res.render('init', {});
+    res.redirect('/');
 });
 
 router.get('/recipes/:slug',(req, res) => {

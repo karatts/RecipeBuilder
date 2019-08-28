@@ -12,8 +12,9 @@ footer, header, menu, nav, section {
 }
 
 header{
-  background-color: #fffefd;
-  color: #f78e81;
+  background-color: #854442;
+  color: #fff4e6;
+  font-family: 'Quicksand', sans-serif;
 }
 
 input{
@@ -47,22 +48,28 @@ div#carousel.container{
 }
 
 body{
-  background-color: white !important;
+  background-color: #f9f9f9 !important;
   width: auto;
 }
 
+#page-container{
+  position: relative;
+  min-height: 100vh;
+}
+
 footer{
-  position: fixed;
   left: 0;
   width: 100%;
-  height: 80px;
+  height: 50px;
+  position: fixed;
   bottom: 0;
-  background-color: #5d5e61;
+  background-color: #4b3832;
   color: white;
+  font-family: 'Quicksand', sans-serif;
 }
 
 #footer{
-  padding-top: 37px;
+  padding-top: 14px;
   padding-left: 20px;
 }
 
@@ -77,56 +84,4 @@ a:focus {
 
 a:hover {
   text-decoration: none;
-}
-
-/* TEXT ATTRIBUTES */
-body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  size: 14px;
-  line-height: 1.6em;
-  color: #666666;
-}
-
-a {
-  color: #dc5333;
-}
-
-a:hover {
-  color: #c64121;
-}
-
-p {
-  margin-bottom: 15px;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  line-height: 1.5em;
-  margin-bottom: 15px;
-  color: #383838;
-  font-weight: bold;
-}
-
-h1 {
-  font-size: 30px;
-}
-
-h2 {
-  font-size: 26px;
-}
-
-h3 {
-  font-size: 22px;
-}
-
-h4 {
-  font-size: 18px;
-}
-
-h5 {
-  font-size: 16px;
-}
-
-h6 {
-  font-size: 14px;
 }
