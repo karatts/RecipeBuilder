@@ -136,7 +136,10 @@
                     listBox.appendChild(new Option(newCurrIngredient,newCurrIngredient));
                     console.log("Adding "+newCurrIngredient);
                     console.log("Updated ingredients list: "+ingredients);
+                    document.getElementById("listBox").style.display = 'block';
                 }
+                document.getElementById("measurement").value = '';
+                document.getElementById("measurementUnit").selectedIndex=0;
                 inputBox.value = "";
             }
         }
@@ -207,7 +210,27 @@
             }
             document.getElementById("myForm").submit();
         }else{
-            document.getElementById("error").style.cssText = "display: block;";
+            document.getElementById("error").style.cssText = "display: inline;";
+        }
+    }
+
+    function updateRadio(){
+
+        if(document.getElementById("noImage").checked){
+            document.getElementById("uploadFile").style.display = 'none';
+            document.getElementById("uploadURL").style.display = 'none';
+            document.getElementById("imageURLText").value = '';
+        }
+
+        if(document.getElementById("imageURL").checked){
+            document.getElementById("uploadFile").style.display = 'none';
+            document.getElementById("uploadURL").style.display = 'inline-flex';
+        }
+
+        if(document.getElementById("imageFile").checked){
+            document.getElementById("uploadURL").style.display = 'none';
+            document.getElementById("uploadFile").style.display = 'inline-flex';
+            document.getElementById("imageURLText").value = '';
         }
     }
 
@@ -222,7 +245,9 @@
 
     #myInput{
         width: 300px;
-        margin-bottom: -1px !important;
+        height: 50px !important;
+        margin-bottom: 0px !important;
+        margin-top: 1px !important;
     }
 
     .autocomplete-items {
@@ -248,31 +273,158 @@
     }
     .autocomplete-active {
     /*when navigating through the items using the arrow keys:*/
-        background-color: DodgerBlue !important; 
-        color: #ffffff; 
+        background-color: #be9b7b !important; 
+        color: black; 
     }
 
     #error{
         display: none; 
         color: red;
     }
+
+    body{
+        background-image: url(/images/background.jpg);
+        background-size: cover;
+    }
+
+    #jumbo{
+        opacity: 0.96;
+        height: 755px;
+        width: 65%;
+        margin-top: 30px;
+        margin-left: 17.5%;
+        margin-right: 17.5%;
+        overflow: hidden;
+        border-radius: 25px;
+        padding:22px;
+    }
+
+    #insideJumbo{
+        overflow: scroll;
+        overflow-x: hidden;
+        height: 710px;
+        padding: 5px;
+        width: 105.5%;
+        padding-right: 25px;
+        font-family: 'Open Sans', sans-serif !important;
+    }
+
+    #v3{
+        font-family: 'Gaegu', cursive !important;
+        font-size: 5rem;
+        font-weight: bolder;
+    }
+
+    #imageHeader{
+        float: right;
+    }
+
+    #title{
+        width: 90%;
+    }
+
+    #measurement{
+        width: 7%;
+        padding-right: 10px !important;
+        padding-left: 2.5% !important;
+    }
+
+    #serving{
+        width: 15% !important;
+        padding-left: 31px !important;
+        padding-right: 10px !important;
+
+    }
+
+    #measurementUnit{
+        display: inline-flex;
+        width: 150px;
+        height: 50px;
+    }
+
+    label{
+        font-weight: bold;
+    }
+
+    option{
+        display: inline-block;
+        background-color: #4b3832;
+        margin-right: 5px;
+        color: #f9f9f9;
+        border-radius: 25px;
+        padding-bottom: 4px;
+        padding-top: 2px;
+        padding-left: 7px;
+        padding-right: 7px;
+    }
+    #listBox{
+        display: none;
+        width: 105%;
+        background-color: transparent;
+        border: 0px;
+        height: 36px;
+        margin-top: 0.5%;
+        margin-bottom: 0.5%;
+        padding-left: 1%;
+    }
+
+    select:active, select:hover, select, select:focus{
+    outline: transparent;
+    }
+
+    .radio{
+        display: block;
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+
+    .radio input[type="radio"]{
+        margin: 0 !important;
+    }
+
+    .form-check-label{
+        padding-left: 3px;
+        font-weight: 500;
+        margin-left: 7px;
+        padding-bottom: 3px;
+    }
+
+    .small-text{
+        font-size: small;
+    }
+
+    .remove-shadow{
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    .word{
+        padding-left: 98px;
+    }
+
 </style>
 
-<div class="container">
+<div class="container jumbotron" id="jumbo">
 
-    <div id="error">
-        There was an error processing your recipe!
-    </div>
+    <div id="insideJumbo">
+    <div><span id="v3">Submit a Recipe</span><span id="imageHeader"><img src=""></span></div>
 
-    <h1>Submit a recipe</h1>
     <form name="FormName" autocomplete="off" method="POST" action="" id="myForm">
-        <div class="form-group" id="titleDiv">
+        <div class="row">
+        <div class="form-group col" id="titleDiv">
             <label>Title</label>
             <input type="text" name="title" id="title" aria-describedby="recipeTitle" onkeypress="return noenter()"  placeholder="Recipe Name" required>
         </div>
 
-        <div id="ingredients">
-            <label>rawingredients and measuredingredients --- needs to be parsed on backend</label>
+        <div class="form-group col" id="servingDiv">
+            <label>Serving Size</label>
+            <input type="number" id="serving" name="serving" min="1">
+        </div>
+
+        </div>
+
+        <div id="ingredients" style="height: 58px;">
+            <label>Ingredients</label>
             <input type="number" id="measurement" name="measurement" min="0">
             <select class="form-control" id="measurementUnit" name="measurementUnit">
                 <option></option>
@@ -289,17 +441,12 @@
             <div class="autocomplete form-group">
                 <input type="text" id="myInput" name="inputBox" size="24" onkeypress="return noenter()" placeholder="e.g. Potato...">
             </div>    
-            <button id="add" type="button">Add ></button> 
-            <select name="listBox" id="listBox" size="4" multiple></select>
-            <button id="remove" type="button">Remove</button>
+            <button id="add" type="button" style="margin-top: 0.2%; margin-left: 3px;" class="btn btn-outline-dark remove-shadow">Add</button>
+            <button id="remove" type="button" class="btn btn-outline-dark remove-shadow" style="margin-top: 0.2%; margin-left: 3px;">Remove</button>
         </div>
-
-        <div style="display: none;">
-        </div>
-        
-        <div class="form-group" id="servingDiv">
-            <label>Serving Size</label>
-            <input type="number" id="serving" name="serving" min="1">
+        <div id="inputBoxWords" class="small-text muted-text"><span class="word" style="padding-left: 126px;">#</span><span class="word">Unit</span><span class="word">Ingredient</span></div>
+        <div id="ingredientsPT2">
+            <select name="listBox" id="listBox" size="1" multiple></select>
         </div>
     
         <div class="form-group" id="instructionsDiv">
@@ -307,16 +454,46 @@
             <textarea name="instructions" class="form-control" id="instructions" rows="3" required></textarea>
         </div>
 
-        <div class="form-group" id="image">
-            <label>Upload an image of your dish</label>
-            {{!-- <input name="recipePhoto" type="file" class="form-control-file" id="recipePhoto"> --}}
-            <small id="optionalMessage" class="form-text text-muted">Optional</small>
-            <input type="text" name="imageURL" placeholder="Image URL">
-        </div>
+        <div class="form-group" id="image" style="display: block;">
+                <label style="margin-right: 15px;">Recipe Image <div class="small-text text-muted">(Optional)</div></label>
+                <div class="radio-buttons" style="display: inline-grid;" onclick="updateRadio()">
+                <div class="form-check form-check-inline radio" style="margin-top:5px;">
+                    <input class="form-check-input" type="radio" name="exampleRadios" id="noImage" value="option3" checked>
+                    <label class="form-check-label" for="exampleRadios2">
+                        None
+                    </label>
+                </div>
+                <div class="form-check form-check-inline radio">
+                    <input class="form-check-input" type="radio" name="exampleRadios" id="imageFile" value="option1">
+                    <label class="form-check-label" for="exampleRadios1">
+                        Upload File
+                    </label>
+                </div>
+                <div class="form-check form-check-inline radio">
+                    <input class="form-check-input" type="radio" name="exampleRadios" id="imageURL" value="option2">
+                    <label class="form-check-label" for="exampleRadios2">
+                        Image URL
+                    </label>
+                </div>
+            </div>
+            <div id="uploadFile" style="display: none; margin-left:100px;">
+                <input type="file" class="form-control-file" id="exampleFormControlFile1" style="height: 64px !important;">
+            </div>
 
-        {{!-- FOR TESTING PURPOSES ---- <button type="button" onclick="allOptions();">Verify</button> --}}
-        <button type="submit" onclick="allOptions();">Submit</button>
+            <div id="uploadURL" style="display: none; margin-left:100px;">
+                {{!-- <input name="recipePhoto" type="file" class="form-control-file" id="recipePhoto"> --}}
+                <input type="text" name="imageURL" id="imageURLText" placeholder="Image URL" style="width: 410px;">
+            </div>
+            
+        </div>
+        <div>
+        <span id="error">
+        There was an error processing your recipe!
+        </span>
+        <span><button type="submit" class="btn btn-outline-dark remove-shadow" onclick="allOptions();" style="float: right;">Submit</button>
+        </span></div>
     </form>
+</div>
 </div>
 
 <div class="container" id="ingredients" style="display: none;">
@@ -324,6 +501,6 @@
         <script>
             allIngredients.push('{{this.name}}');
         </script>
-        {{this.name}}<br>
+        {{!-- {{this.name}}<br> --}}
     {{/each}}
 </div>

@@ -99,11 +99,25 @@ function updateSuggestions(){
     }
 }
 
+// --------------- CHANGE LAYOUT OF PAGE ---------------
 function submit() {
     //find matching recipes
     //reveal recipes...
-    console.log(document.getElementById("listBox"));
-    //document.getElementById("recipes").style.cssText = "display: none;";
+    document.getElementById("jumbo").style.display = 'none';
+    document.getElementById("links").style.marginTop = '15px';
+    document.getElementById("reveal").style.height ='750px';
+    document.getElementById("insideReveal").style.height = '720px';
+    document.getElementById("reset").style.display = 'inline-block';
+    document.getElementById("linkDiv").style.marginLeft = '-10%';
+}
+
+function reset(){
+    document.getElementById("jumbo").style.display = 'block';
+    document.getElementById("links").style.marginTop = '0px';
+    document.getElementById("reveal").style.height ='260px';
+    document.getElementById("insideReveal").style.height = '230px';
+    document.getElementById("reset").style.display = 'none';
+    document.getElementById("linkDiv").style.marginLeft = '0px';
 }
 
 window.onload = function() {
@@ -234,6 +248,7 @@ var decodeHTML = function (html) {
 	txt.innerHTML = html;
 	return txt.value;
 };
+
 </script>
 
 <style>
@@ -268,8 +283,8 @@ var decodeHTML = function (html) {
 }
 .autocomplete-active {
   /*when navigating through the items using the arrow keys:*/
-  background-color: DodgerBlue !important; 
-  color: #ffffff; 
+  background-color: #be9b7b !important; 
+  color: black; 
 }
 
 .recipe{
@@ -318,10 +333,10 @@ option{
     padding-right: 7px;
 }
 #listBox{
-    width: 100%;
+    width: 105%;
     background-color: transparent;
     border: 0px;
-    height: 35px;
+    height: 36px;
     margin-top: 0.5%;
     margin-bottom: 0.5%;
     padding-left: 13%;
@@ -345,6 +360,7 @@ body{
     margin-left: 2.5%;
     margin-right: 2.5%;
     border-radius: 25px;
+    overflow-x: hidden;
 }
 
 #reveal{
@@ -356,13 +372,15 @@ body{
     border-radius: 25px;
     padding: 15px;
     width: auto;
+    overflow-x: hidden;
 }
 
 #insideReveal{
     overflow: scroll;
     overflow-x: hidden;
     height: 230px;
-    width: auto;
+    width: 103.5%;
+    padding-right: 25px;
 }
 
 #links{
@@ -401,6 +419,27 @@ input[type='radio']{
     transform: scale(2); 
 }
 
+.card.mb-3.col-6.recipeCards{
+    width:100%; 
+    min-width: 47%; 
+    margin: 5px;
+    background-color: transparent;
+    border: 0px;
+}
+
+.card-body{
+    margin-left: 7px !important;
+    padding-top: 4% !important;
+    
+}
+
+.recipeLink.container {
+    height: auto;
+}
+
+.recipeLink{
+    padding-left: 12%;
+}
 </style>
 
 <div class="jumbotron" id="jumbo">
@@ -450,9 +489,10 @@ input[type='radio']{
 <div class="container jumbotron" id="links">
     <div class="row" style="margin: 0px; padding: 0px;">
         <div class="col-4" style="margin: 0px; padding: 0px;"></div>
-        <div class="col" style="margin: 0px; padding: 0px;">
+        <div class="col" style="margin: 0px; padding: 0px;" id="linkDiv">
             <button id="submit" class="btn btn-outline-dark" style="margin-left: 5%;">Find My Recipes!</button>
-            <button id="addRec" class="btn btn-outline-dark" style="margin-left: 5px;">Add A Recipe!</button>
+            <button id="addRec" class="btn btn-outline-dark" style="margin-left: 5px;" onclick="window.location='/addrecipe';">Add A Recipe!</button>
+            <button id="reset" class="btn btn-outline-dark" style="margin-left: 5px; display: none;" onclick="reset();">Change My Ingredients</button>
         </div>
     </div>
 </div>
@@ -468,16 +508,18 @@ input[type='radio']{
         {{/each}}
     </div>
 
-    <div class="container">
-        <div class="container row" id="recipes">
+    <div>
+        <div class="container row card-group" id="recipes">
             {{#each recipes}}
             <script>
                 var recipeIngredients = [];
             </script>
-            <div class="recipe col-3" name='{{this.title}}'>
-                <div class="recImage"><img src="{{this.image}}" style="margin-left:9%; border-radius: 50%; height:200px; width: 200px;"></div>
-                <div><h3>{{this.title}}</h3>
-                <div class="rec-ingredients">
+            <div class="recipe card mb-3 col-6 recipeCards" name='{{this.title}}'>
+                <div class="row no-gutters">
+                <div class="recImage col-md-5"><img src="{{this.image}}" style="border-radius: 50%; height:200px; width: 200px;">
+                <div class="recipeLink"><a href="/recipes/{{this.slug}}">Check out the recipe!</a></div></div>
+                <div class="col-md-7"><h3>{{this.title}}</h3>
+                <div class="rec-ingredients card-body">
                     This recipe includes:<br>
                     <ul>
                     {{#each this.rawingredients}}
@@ -488,7 +530,8 @@ input[type='radio']{
                     {{/each}}
                     </ul>
                 </div>
-                <div class="recipeLink container"><a href="/recipes/{{this.slug}}">Check out the recipe!</a></div></div>
+                </div>
+            </div>
             </div>
             <script>
                 var decoded = decodeHTML('{{this.title}}');
@@ -499,3 +542,5 @@ input[type='radio']{
     </div>
     </div>
 </div>
+
+<div style="height: 50px;"></div>
