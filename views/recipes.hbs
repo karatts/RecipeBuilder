@@ -1,3 +1,162 @@
-recipes
+<script>
+    window.onload = function(){
+        //parse instructions into numbered points.
+        let inst = document.getElementById("instructionsTextHidden").innerHTML;
+        var result = inst.match(/([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g);
+        var startlist = "<ol>";
+        var endlist = "</ol>";
+        var longList = "";
+        for(let o =0; o < result.length-1; o++){
+            longList = longList + '<li>' + result[o] + '</li>';
+        }
+        document.getElementById("instructionsText").innerHTML = startlist + longList + endlist;
+    }
 
-{{recipe}}
+    function hide(){
+        document.getElementById("right").style.display = 'none';
+        document.getElementById("left").style.display = 'none';
+        document.getElementById("viewPic").style.display = 'none';
+        document.getElementById("viewRec").style.display = 'block';
+    }
+
+    function reveal(){
+        document.getElementById("right").style.display = 'block';
+        document.getElementById("left").style.display = 'block';
+        document.getElementById("viewPic").style.display = 'block';
+        document.getElementById("viewRec").style.display = 'none';
+    }
+</script>
+
+<style>
+    #page{
+        margin: 0px; 
+        padding: 0px;
+    }
+    .half-page{
+        margin: 0px;
+        padding: 0px;
+    }
+    body{
+        background-image: url('{{recipe.image}}');
+        background-size: cover;
+        overflow: hidden;
+        margin-left:3px;
+    }
+    
+    html{
+        width: unset;
+    }
+
+    #title{
+        background-color: white;
+        opacity: 0.7;
+        font-family: 'Abril Fatface', cursive;
+        font-size: 5rem;
+        font-style: italic;
+        overflow: hidden;
+        margin-top: 15%;
+        padding-left: 6%;
+        border-radius: 5px;
+    }
+    #title-text{
+        overflow-wrap: break-word;
+    }
+    #leftFirstRow{
+        margin-right: 2%;
+    }
+
+    #leftSecondRow{
+        margin-top: 35px;
+        margin-left: 2%;
+        margin-right: 7%;
+    }
+
+    #rightRow{
+        background-color: #f9f9f9;
+        opacity: 0.8;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 20%;
+        margin-right: -4%;
+    }
+    #ingredients{
+        background-color: white;
+        opacity: 0.6;
+        font-family: 'Open Sans', sans-serif !important;
+        border-radius: 5px;
+    }
+    #ingredientHeader,
+    #instructionsHeader{
+        border-bottom: 2px solid black;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    #ingredientList{
+        padding-left: 30px;
+        padding-top: 10px;
+    }
+    #instructionsText{
+        padding-left: 45px !important;
+        padding-top: 10px;
+        font-family: 'Open Sans', sans-serif !important;
+    }
+    li{
+        margin-bottom: 5px;
+        margin-top: 5px;
+    }
+
+    .btn-outline-dark {
+        color: #f9f9f9 !important;
+        background-color: #343a40 !important;
+        border-color: #343a40 !important;
+        text-shadow: none !important;
+        box-shadow: none !important;
+    }
+
+    .btn-outline-dark:hover,
+    .btn-outline-dark:active {
+        color: #343a40 !important;
+        background-color: #f9f9f9 !important;
+        border-color: #f9f9f9 !important;
+        text-shadow: none !important;
+        box-shadow: none !important;
+    }
+
+</style>
+
+    <div class="row" id="page">
+        <div class="half-page col-6" id="left">
+            <div class="row" id="leftFirstRow">
+                <div class="col-12" id="title">
+                        <span id="title-text">{{recipe.title}}</span>
+                </div>
+            </div>
+            <div class="row" id="leftSecondRow">
+                <div class="col-12" id="ingredients">
+                    <div id="ingredientHeader">Ingredients</div>
+                    <div id="ingredientList">
+                        <ul>
+                        {{#each recipe.measuredingredients}}
+                            <li>{{this}}</li>
+                        {{/each}}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="right" class="half-page col-6">
+            <div class="row" id="rightRow">
+                <div class="col-12" id="instructionsHeader">
+                    Directions
+                </div>
+                <div class="col-12" id="instructionsText">
+                </div>
+                <div class="col-12" id="instructionsTextHidden" style="display: none;">
+                    {{recipe.instructions}}
+                </div>
+            </div>
+        </div>
+
+        <button type="button" onclick="hide();" class="btn btn-outline-dark" style="position: absolute; bottom: 0; right: 0; margin-bottom: 70px !important; margin: 20px;" id="viewPic">View Recipe Picture</button>
+        <button type="button" onclick="reveal();" class="btn btn-outline-dark" style="position: absolute; display: none; bottom: 0; right: 0; margin-bottom: 70px !important; margin: 20px;" id="viewRec">View Recipe</button>
+    </div>
